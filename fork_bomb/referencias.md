@@ -1,0 +1,8 @@
+- https://www.unixmen.com/fork-bomb-can-prevent-danger/
+- https://www.youtube.com/watch?v=bt9tKIPeg1Q (Aula Sobre o Comand EXEC)
+- https://www.lifewire.com/exec-linux-command-unix-command-4097150
+- https://ss64.com/bash/ulimit.html
+- https://unix.stackexchange.com/questions/283496/why-do-these-bash-fork-bombs-work-differently-and-what-is-the-significance-of 
+- https://stackoverflow.com/questions/45708056/how-do-you-stop-a-fork-bomb
+- https://superuser.com/questions/168804/how-do-i-kill-a-forkbomb-process (nice --20)
+- http://blog.infizeal.com/2013/04/defusing-fork-bomb.html (do-nothing counter) (pidmax)
