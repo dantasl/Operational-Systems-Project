@@ -14,3 +14,12 @@ obs: não tem efeito no root ou em qualquer usuário/programa que possu flags `C
 
 
 exec: comando que invoca subprocessos em segundo plano (não traz para o bash)
+
+---
+
+`$ ps -ef | grep 'PID\|pstree'`
+`ps -eo ppid --no-header > ps.out; python mypy.py`
+`ps -e --no-header | wc -l` número de processos rodando
+
+bash: fork: Resource temporarily unavailable
+bash: fork: retry: No child processes
