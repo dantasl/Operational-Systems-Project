@@ -1,4 +1,4 @@
-# Operation Systems Project (Task 1 | Part 2) - Big Brother
+# Operational Systems Project (Task 1 | Part 2) - Big Brother
 
 If you know your George Orwell, you know that "Big Brother" is watching you. Including the processes that are running on your SO.
 
@@ -38,3 +38,13 @@ To stop the script you must simply type:
 * <code>Ctrl + C</code>
 
 ## Running (4):
+
+Also, there is a bash script for this. It can be found at <code>/src/scripts</code> as well and its name is <code>printer.sh</code>.
+Make sure that you can execute this script following the same precautions of previous session.
+
+To run, you might type:
+
+* <code>./printer.sh {PID}</code>
+
+Where {PID} is the PID of the process that you want to see its family tree. If none is provided, the execution is aborted.
+Also, <strong>you must run this script only inside its directory, never giving an absolute path</strong>. This is because I am using <code>pwd</code> to get the location and store the resulting file inside /results.
