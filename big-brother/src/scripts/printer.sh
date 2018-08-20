@@ -16,4 +16,6 @@ if [ $# -ne 1  ]; then
     finish
 fi
 
-ls | awk ' BEGIN { ORS = ""; print "["; } { print "\/\@"$0"\/\@"; } END { print "]"; }' | sed "s^\"^\\\\\"^g;s^\/\@\/\@^\", \"^g;s^\/\@^\"^g"
+PARENT_DIR=`cd ../../results && pwd`
+pstree -p -A $1 > $PARENT_DIR/$1.txt
+printf "\nCheckout for a file named $1.txt inside the directory results. There lies your tree!\n"

@@ -1,3 +1,10 @@
+/**
+ * @file    status.cpp
+ * @brief   Receives a PID and prompts the arguments selected by the user.
+ * @author  Lucas Gomes Dantas (dantaslucas@ufrn.edu.br)
+ * @date    August 20th - 2018
+ */
+
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
