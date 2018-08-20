@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# ATTENTION! RUN THIS SCRIPT ONLY INSIDE ITS ORIGINAL DIRECTORY
+#
 # Script Name: printer.sh
 #
 # Author: Lucas Gomes Dantas (dantaslucas@ufrn.edu.br)
