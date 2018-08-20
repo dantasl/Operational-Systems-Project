@@ -2,6 +2,8 @@
 
 If you know your George Orwell, you know that "Big Brother" is watching you. Including the processes that are running on your SO.
 
+<strong>Lucas Gomes Dantas - dantaslucas@ufrn.edu.br</strong>
+
 ## What it should do:
 
 * (1) Given a certain PID, read and prompt to user the information stored in /proc/pid/status
