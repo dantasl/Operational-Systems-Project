@@ -5,7 +5,7 @@
 #include <iterator>
 #include <vector>
 
-std::vector<std::string> get_info (const char* pid, std::vector<std::string> arguments)
+std::vector<std::string> get_info (const char* pid, const std::vector<std::string> &arguments)
 {
     std::ifstream status;
     std::string line;
