@@ -48,10 +48,24 @@ updateState()
     fi
 }
 
+checkPanicButtonPressed()
+{
+    PRESSED=`cat $GPIO_DIR$PANIC_BUTTON/value`
+    echo $PRESSED
+}
+
+getTopMemoryUsagePID()
+{
+    BAD_PID=`ps -eo pid --no-headers --sort=-%mem | head -1`
+    echo $BAD_PID
+}
+
 # Here the LEDs go berserk and we must check if user pressed the button
 initiatePanic()
 {
-    while [ 1 ]; do
+    LOOP_KILL=1
+    while [ $LOOP_KILL -eq 1 ]; do
+        # Leds are now blinking
         updateLed $LED_GREEN 1
         updateLed $LED_RED 1
         updateLed $LED_YELLOW 1
@@ -60,6 +74,20 @@ initiatePanic()
         updateLed $LED_RED 0
         updateLed $LED_YELLOW 0
         sleep 0.5
+
+        # Check if button is being pressed
+        PRESSED=$(checkPanicButtonPressed)
+        if [ $PRESSED -eq 1 ]; then
+            # Kill process
+            kill SIGTERM getTopMemoryUsagePID
+            # LEDs are turnd off for 3 seconds
+            updateLed $LED_GREEN 0
+            updateLed $LED_RED 0
+            updateLed $LED_YELLOW 0
+            sleep 3
+            # Breaks loop and goes back to previous logic
+            LOOP_KILL=0
+        fi
     done
 }
 
