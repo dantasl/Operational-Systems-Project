@@ -1,19 +1,55 @@
 #!/bin/bash
+#
+# Script Name: semaphore.sh
+#
+# Author: Lucas Gomes Dantas (dantaslucas@ufrn.edu.br)
+# Author: Lucas Aléssio
+# Date: September 4th - 2018
+
+# Section 0 - Constants declaration
+#######################################################################
 
 GPIO_DIR=/sys/class/gpio/gpio
+EXPORT_DIR=/sys/class/gpio/export
 LED_RED=50
 LED_YELLOW=2
 LED_GREEN=112
 PANIC_BUTTON=115
 
-printf "Big Brother is now watching your processes every 2 seconds.\n\n"
+#######################################################################
 
-updateLed()
+# Section 1 - First configuration that the GPIO needs
+#######################################################################
+
+initButton()
 {
-	echo $2 > $GPIO_DIR$1/value
-	echo $1 to $2
+	echo $1 > $EXPORT_DIR
+	echo $1 exported
+
+	echo in > $GPIO_DIR$1/direction
+	cat $GPIO_DIR$1/direction
 }
 
+initLed()
+{
+	echo $1 > $EXPORT_DIR
+	echo $1 exported
+
+	echo out > $GPIO_DIR$1/direction
+	cat $GPIO_DIR$1/direction
+
+	echo 0 > $GPIO_DIR$1/value
+	cat $GPIO_DIR$1/value
+}
+
+initLed $LED_RED
+initLed $LED_YELLOW
+initLed $LED_GREEN
+initButton $PANIC_BUTTON
+
+#######################################################################
+
+# Function that treats the ending of this script
 finish()
 {
     printf "\nBig Brother now rests at peace.\n"
@@ -21,11 +57,32 @@ finish()
     exit 0
 }
 
+# Change the state of a given LED - e.g. Put RED_LED to 1 (turn on)
+updateLed()
+{
+	echo $2 > $GPIO_DIR$1/value
+	echo $1 to $2
+}
+
+# Here we can check which process is consuming more memory and get its PID
+getTopMemoryUsagePID()
+{
+    BAD_PID=`ps -eo pid --no-headers --sort=-%mem | head -1`
+    echo $BAD_PID
+}
+
 # Here we will check how much % the resource is being used
 checkResourceStatus()
 {
     PERCENTAGE=`ps -eo %mem --no-headers --sort=-%mem | head -1`
     echo $PERCENTAGE
+}
+
+# Here we will check if the panic button was pressed
+checkPanicButtonPressed()
+{
+    PRESSED=`cat $GPIO_DIR$PANIC_BUTTON/value`
+    echo $PRESSED
 }
 
 # Updates how the system will behave depending on the percentage
@@ -46,18 +103,6 @@ updateState()
     else
         initiatePanic
     fi
-}
-
-checkPanicButtonPressed()
-{
-    PRESSED=`cat $GPIO_DIR$PANIC_BUTTON/value`
-    echo $PRESSED
-}
-
-getTopMemoryUsagePID()
-{
-    BAD_PID=`ps -eo pid --no-headers --sort=-%mem | head -1`
-    echo $BAD_PID
 }
 
 # Here the LEDs go berserk and we must check if user pressed the button
@@ -92,6 +137,8 @@ initiatePanic()
 }
 
 trap finish SIGINT SIGTERM
+
+printf "Big Brother is now watching your processes every 2 seconds.\n\n"
 
 while [ 1 ]; do
     printf "\n===============================================\n"
