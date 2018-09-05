@@ -124,7 +124,8 @@ initiatePanic()
         PRESSED=$(checkPanicButtonPressed)
         if [ $PRESSED -eq 1 ]; then
             # Kill process
-            kill SIGTERM getTopMemoryUsagePID
+            PID=$(getTopMemoryUsagePID)
+            kill -9 $PID
             # LEDs are turnd off for 3 seconds
             updateLed $LED_GREEN 0
             updateLed $LED_RED 0
