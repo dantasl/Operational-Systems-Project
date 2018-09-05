@@ -3,7 +3,7 @@
 # Script Name: semaphore.sh
 #
 # Author: Lucas Gomes Dantas (dantaslucas@ufrn.edu.br)
-# Author: Lucas Aléssio
+# Author: Lucas Aléssio Anunciado Silva (lucas.alessio@live.com)
 # Date: September 4th - 2018
 
 # Section 0 - Constants declaration
