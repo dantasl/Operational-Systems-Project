@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export_dir=/sys/class/gpio/export
 gpio_dir=/sys/class/gpio/gpio
 
@@ -6,7 +8,8 @@ led_amarelo=2
 led_verde=112
 botao=115
 
-initButton() {
+initButton()
+{
 	echo $1 > $export_dir
 	echo $1 exported
 
@@ -14,7 +17,8 @@ initButton() {
 	cat $gpio_dir$1/direction
 }
 
-initLed() {
+initLed()
+{
 	echo $1 > $export_dir
 	echo $1 exported
 
