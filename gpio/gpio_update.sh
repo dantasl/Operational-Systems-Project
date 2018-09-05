@@ -44,8 +44,22 @@ updateState()
         updateLed $LED_RED 1
         updateLed $LED_YELLOW 0
     else
-        printf "Fuck!"
+        initiatePanic
     fi
+}
+
+initiatePanic()
+{
+    while [ 1 ]; do
+        updateLed $LED_GREEN 1
+        updateLed $LED_RED 1
+        updateLed $LED_YELLOW 1
+        sleep 0.5
+        updateLed $LED_GREEN 0
+        updateLed $LED_RED 0
+        updateLed $LED_YELLOW 0
+        sleep 0.5
+    done
 }
 
 trap finish SIGINT SIGTERM
