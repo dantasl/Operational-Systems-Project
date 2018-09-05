@@ -32,3 +32,4 @@ initLed()
 initLed $led_vermelho
 initLed $led_amarelo
 initLed $led_verde
+initButton $botao

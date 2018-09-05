@@ -48,6 +48,7 @@ updateState()
     fi
 }
 
+# Here the LEDs go berserk and we must check if user pressed the button
 initiatePanic()
 {
     while [ 1 ]; do
