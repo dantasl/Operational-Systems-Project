@@ -119,7 +119,6 @@ initiatePanic()
         updateLed $LED_RED 0
         updateLed $LED_YELLOW 0
         sleep 0.5
-
         # Check if button is being pressed
         PRESSED=$(checkPanicButtonPressed)
         if [ $PRESSED -eq 1 ]; then
