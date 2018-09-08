@@ -8,5 +8,11 @@ If you'd like to discuss about anything in here, you can send an e-mail to eithe
 * <code>Lucas Gomes Dantas - dantaslucas@ufrn.edu.br</code>
 * <code>Lucas Aléssio Anunciado Silva - lucas.alessio@live.com</code>
 
-## Authors
+# Authors
 
+|             ![Lucas Dantas][author1]           |         ![Lucas Aléssio][author2]           |
+|---------------------------------------------------|--------------------------------------------|
+|[Lucas Dantas](https://github.com/vertumno) | [Lucas Aléssio](https://github.com/lieet)|
+
+[author1]: https://avatars2.githubusercontent.com/u/17501172?s=460&v=4
+[author2]: https://avatars3.githubusercontent.com/u/12575871?s=400&v=4
