@@ -30,7 +30,7 @@ We implemented the monitoring part in Bash Script. You can find the code in <cod
 There you'll see that the code was divided in sections from 0 to 4, each one with comments and a clear implementation and we highly recommend you to check out the source.
 
 Since we implemented the hardware part using the <code>Beagle Bone Black (BBB)</code> single board computer, you can check out
-the schematics both in a PNG file and a Fritzing file, the one that suits you better.
+the schematics both in a PNG file (<code>/docs/schematics.png</code>) and a Fritzing file (<code>/docs/schematics.fzz</code>), the one that suits you better.
 
 Also, there is a simple C++ code to stress out the main memory consumption. It was developed purely by empirical analisys (the one that worked with the BBB that we were using), so you may have to change the values to work properly on yours.
 
