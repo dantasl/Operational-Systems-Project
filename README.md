@@ -8,6 +8,13 @@ If you'd like to discuss about anything in here, you can send an e-mail to eithe
 * <code>Lucas Gomes Dantas - dantaslucas@ufrn.edu.br</code>
 * <code>Lucas Aléssio Anunciado Silva - lucas.alessio@live.com</code>
 
+# TODO
+
+- () escrever instruções no arquivo (R, L, U, D);
+- () enviar arquivo de instruções para o servidor;
+- () servidor executando as instruções no jogo;
+- () adicionar threads e perfumarias.
+
 # Authors
 
 |             ![Lucas Dantas][author1]           |         ![Lucas Aléssio][author2]           |
