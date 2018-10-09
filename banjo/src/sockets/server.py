@@ -1,4 +1,5 @@
 import socket
+import subprocess
 from threading import *
 
 HOST = "192.168.0.23"
@@ -22,6 +23,14 @@ class Client(Thread):
             if not data:
                 break
             print("Instruction: {}".format(data))
+            if data == "UP":
+                subprocess.run(["xdotool", "key", "Up"])
+            elif data == "DOWN":
+                subprocess.run(["xdotool", "key", "Down"])
+            elif data == "LEFT":
+                subprocess.run(["xdotool", "key", "Left"])
+            elif data == "RIGHT":
+                subprocess.run(["xdotool", "key", "Right"])
             self.sock.sendall(b'Instruction received.')
 
 
