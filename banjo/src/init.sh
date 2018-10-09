@@ -26,15 +26,64 @@ POTENTIOMETER=$ADC_FOLDER/in_voltage3_raw
 init()
 {
     # Init the analog components
-	echo cape-bone-iio > /sys/devices/bone_capemgr.9/slots
-	# Init button
-	echo $BUTTON > $EXPORT_DIR
-	echo in > $GPIO_DIR$BUTTON/direction
-	printf "====================================================="
-    printf "Initializing components... OK"
-    printf "BUTTON AT $BUTTON\nPHOTORESISTOR AT $PHOTORESISTOR\n"
-    printf "POTENTIOMETER AT $POTENTIOMETER\nSAVING INSTRUCTIONS AT $ADC_FILE\n"
-    printf "====================================================="
+    echo cape-bone-iio > /sys/devices/bone_capemgr.9/slots
+    # Init button
+    echo $BUTTON > $EXPORT_DIR
+    echo in > $GPIO_DIR$BUTTON/direction
+}
+
+init
+
+printf "=====================================================\n"
+printf "Initializing components... OK\n"
+printf "BUTTON AT $BUTTON\nPHOTORESISTOR AT $PHOTORESISTOR\n"
+printf "POTENTIOMETER AT $POTENTIOMETER\nSAVING INSTRUCTIONS AT $ADC_FILE\n"
+printf "=====================================================\n"
+
+#######################################################################
+
+# Section 3 - {}
+#######################################################################
+
+# Add comment
+checkPotentiometerChange()
+{
+    if cat $POTENTIOMETER ; then
+	CHECK_CURRENT=`cat $POTENTIOMETER`
+        DIFF=$(($CHECK_CURRENT-$POTCHANGE))
+        if [ `echo $DIFF | tr -d -` -gt 200 ]; then
+            if [ $CHECK_CURRENT -lt 2048 ]; then
+                echo 'LEFT' >> $ADC_FILE
+            else
+                echo 'RIGHT' >> $ADC_FILE
+            fi
+        fi
+        POTCHANGE=$CHECK_CURRENT
+    fi
+}
+
+# Add comment
+checkPhotoresistorChange()
+{
+    if cat $PHOTORESISTOR ; then
+	    CURRENT_PHOTO=`cat $PHOTORESISTOR`
+        if [ $CURRENT_PHOTO -lt 500 ]; then
+            echo 'UP' >> $ADC_FILE
+        fi
+        PHOTOCHANGE=$CURRENT_PHOTO
+    fi
+}
+
+# Add comment
+checkButtonChange()
+{
+    if cat $GPIO_DIR$BUTTON/value ; then
+	    CURRENT_BUTTON=`cat $GPIO_DIR$BUTTON/value`
+        if [ $CURRENT_BUTTON -eq 1 ]; then
+            echo 'DOWN' >> $ADC_FILE
+        fi
+        BUTTONCHANGE=$CURRENT_BUTTON
+    fi
 }
 
 #######################################################################
@@ -43,38 +92,15 @@ init()
 #######################################################################
 
 POTCHANGE=0
+PHOTOCHANGE=0
+BUTTONCHANGE=0
 
 while [ 1 ]; do
     echo '' > $ADC_FILE
-    if [ `cat $PHOTORESISTOR` -lt 500 ]; then
-        echo 'UP' > $ADC_FILE
-    fi
-
-    if [ `cat $GPIO_DIR$BUTTON/value` -eq 1 ]; then
-        echo 'DOWN' >> $ADC_FILE
-    fi
-
-    POTCHANGE=$(check_pot_change $POTCHANGE)
+    checkButtonChange || true
+    checkPhotoresistorChange || true
+    checkPotentiometerChange || true
+    sleep 1
 done
-
-#######################################################################
-
-# Section 3 - {}
-#######################################################################
-
-# Add comment
-check_pot_change()
-{
-    CHECK_CURRENT=`cat $POTENTIOMETER`
-    DIFF=$(($CHECK_CURRENT-$1))
-    if [ `echo $DIFF | tr -d -` -gt 200 ]; then
-        if [ $CHECK_CURRENT -lt 2048 ]; then
-            echo 'LEFT' >> $ADC_FILE
-        else
-            echo 'RIGHT' >> $ADC_FILE
-        fi
-    fi
-    echo $CHECK_CURRENT
-}
 
 #######################################################################
