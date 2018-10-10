@@ -1,6 +1,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.ADC as ADC
 import socket
+import threading
 from time import sleep
 
 HOST = '192.168.0.23'  # Standard loopback interface address (localhost)
@@ -23,21 +24,24 @@ def send_instruction(instruction):
     s.sendall(instruction)
 
 
-def check_photo_resistor(previous_state):
+def check_photo_resistor():
+    global PHOTO_RESISTOR_CHANGE
     photo_resistor = ADC.read("P9_33")
-    diff = abs(photo_resistor - previous_state)
+    diff = abs(photo_resistor - PHOTO_RESISTOR_CHANGE)
     print("Photoresistor: {}".format(photo_resistor))
     if diff > 0.02:
         if photo_resistor < 0.05:
             print(PHOTO_RESISTOR_INSTRUCTION)
             send_instruction(PHOTO_RESISTOR_INSTRUCTION)
-        return photo_resistor
-    return previous_state
+        PHOTO_RESISTOR_CHANGE = photo_resistor
+    else:
+        pass
 
 
-def check_potentiometer(previous_state):
+def check_potentiometer():
+    global POTENTIOMETER_CHANGE
     potentiometer = ADC.read("P9_38")
-    diff = abs(potentiometer - previous_state)
+    diff = abs(potentiometer - POTENTIOMETER_CHANGE)
     print("Potentiometer: {}".format(potentiometer))
     if diff > 0.3:
         if potentiometer < 0.5:
@@ -46,11 +50,14 @@ def check_potentiometer(previous_state):
         else:
             print(POTENTIOMETER_ABOVE_CENTER_INSTRUCTION)
             send_instruction(POTENTIOMETER_ABOVE_CENTER_INSTRUCTION)
-        return potentiometer
-    return previous_state
+        POTENTIOMETER_CHANGE = potentiometer
+    else:
+        pass
 
 
 while True:
-    PHOTO_RESISTOR_CHANGE = check_photo_resistor(PHOTO_RESISTOR_CHANGE)
-    POTENTIOMETER_CHANGE = check_potentiometer(POTENTIOMETER_CHANGE)	
+    photo_thread = threading.Thread(target=check_photo_resistor)
+    potentiometer_thread = threading.Thread(target=check_potentiometer)
+    photo_thread.start()
+    potentiometer_thread.start()
     sleep(0.5)
