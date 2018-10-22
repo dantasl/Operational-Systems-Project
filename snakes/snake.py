@@ -3,77 +3,14 @@ import time
 import sys
 from random import randint
 
-class Field:
-    def __init__(self, size):
-        self.size = size
-        self.icons = {
-            0: ' . ',
-            1: ' * ',
-            2: ' # ',
-            3: ' & ',
-        }
-        self.snake_coords = []
-        self._generate_field()
-        self.add_entity()
-
-    def add_entity(self):        
-        while(True):
-            i = randint(1, self.size-1)
-            j = randint(1, self.size-1)
-            entity = [i, j]
-            
-            if entity not in self.snake_coords:
-                self.field[i][j] = 3
-                break
-
-    def _generate_field(self):
-        self.field = [[0 for j in range(self.size)] for i in range(self.size)]
-
-    def _clear_field(self):        
-        self.field = [[j if j!= 1 and j!= 2 else 0 for j in i] for i in self.field]
-
-    def render(self, screen):
-        size = self.size
-        self._clear_field()
-
-        # Render snake on the field
-        for i, j in self.snake_coords:
-            self.field[i][j] = 1
-
-        # Mark head
-        head = self.snake_coords[-1]
-        self.field[head[0]][head[1]] = 2
-
-        for i in range(size):
-            row = ''
-            for j in range(size):
-                row += self.icons[ self.field[i][j] ]
-
-            screen.addstr(i, 0, row)
-
-    def get_entity_pos(self):
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.field[i][j] == 3:
-                    return [i, j]
-
-        return [-1, -1]
-
-    def is_snake_eat_entity(self):
-        entity = self.get_entity_pos()
-        head = self.snake_coords[-1]
-        return entity == head
-
 class Snake:
-    def __init__(self, name, field):
+    def __init__(self, name):
         self.name = name
-        self.direction = curses.KEY_RIGHT
-        self.field = field
+        self.direction = curses.KEY_RIGHT        
+        self.coords = [[0, 0], [0, 1], [0, 2], [0, 3]]
 
-        # Init basic coords
-        x = randint(0, self.field.size)
-        y = randint(0, self.field.size-4)
-        self.coords = [[x, y], [x, y+1], [x, y+2], [x, y+3]]
+    def set_field(self, field):
+        self.field = field
         
     def set_direction(self, ch):
         # Check if wrong direction
@@ -144,42 +81,9 @@ class Snake:
 
         del(self.coords[0])
         self.coords.append(head)
-        self.field.snake_coords = self.coords
 
         # check if snake eat an entity
-        if self.field.is_snake_eat_entity():
+        if self.field.is_snake_eat_entity(self):
             curses.beep()
             self.level_up()
             self.field.add_entity()
-
-def main(screen):
-    # Configure screen
-    screen.timeout(0)
-
-    size = 20
-
-    # Init snake & field
-    field = Field(size)
-    snake = Snake("Joe", field)
-
-    while(True):
-        # Get last pressed key
-        ch = screen.getch()
-        if ch != -1:
-            # If some arrows did pressed - change direction
-            snake.set_direction(ch)
-
-        # Move snake
-        if (snake.is_alive()):
-            snake.move()
-             # Render field
-            field.render(screen)
-
-            screen.addstr(size, 0, "{} playing".format(snake.name), curses.A_STANDOUT)
-
-        screen.refresh()
-        
-        time.sleep(.4)
-
-if __name__=='__main__':
-    curses.wrapper(main)
