@@ -79,7 +79,7 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Memory (in MB)
+                            Memory and Cache (in MB)
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -107,45 +107,11 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Cache
+                            Page Faults
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-line-chart-multi"></div>
-                            </div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-6 -->
-                <div class="col-lg-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Moving Line Chart Example
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-line-chart-moving"></div>
-                            </div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-6 -->
-                <div class="col-lg-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Bar Chart Example
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-bar-chart"></div>
-                            </div>
+                            <div id="page_faults_div"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -177,6 +143,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             sendRequest();
+            getPageFaults();
             function sendRequest(){
                 $.ajax({
                     url: "{{ url_for('system_info') }}",
@@ -220,6 +187,19 @@
                     }
                 });
                 setTimeout(sendRequest, 5000);
+            }
+            function getPageFaults(){
+                $.ajax({
+                    url: "/pgfaults",
+                    success: function(data){
+                        $( "#page_faults_div" ).empty();
+                        var response = JSON.parse(data);
+                        for (var i in response) {
+                            var txt1 = "<p>Text.</p>";
+                        }
+                    }
+                });
+                setTimeout(getPageFaults, 8000);
             }
         });
     </script>

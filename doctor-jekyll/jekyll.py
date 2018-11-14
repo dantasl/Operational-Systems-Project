@@ -1,5 +1,5 @@
 import json
-from subprocess import check_output
+from subprocess import check_output, Popen, PIPE, STDOUT
 from flask import Flask, flash, redirect, render_template, request, session, abort
 
 jekyll = Flask(__name__)
@@ -15,6 +15,7 @@ def normalize_to_list(command):
         elif c == " " and len(word) > 1:
             c_list.append(word)
             word = ""
+    c_list.append(word)  # Last word can enter simply like this
     return c_list
 
 
@@ -55,6 +56,34 @@ def get_swap():
 
     return swa_dict
 
+
+@jekyll.route("/pgfaults")
+def get_pg_fault():
+    cmd = "ps -eo min_flt,maj_flt,pid | less"
+    pg_fault = check_output(cmd, shell=True).decode("utf-8")  # Calling command to get page faults
+    items = pg_fault.split("\n")
+    items_list_big = [item.split(" ") for item in items]
+
+    items_list = []
+    for item_list in items_list_big:
+        local_list = []
+        for item in item_list:
+            if len(item) > 0:
+                local_list.append(item)
+        items_list.append(local_list)
+
+    items_list_dict = []
+    for item in items_list[1:]:
+        if len(item) == 3:
+            item_dict = {
+                "page_minor": item[0],
+                "page_major": item[1],
+                "pid": item[2]
+            }
+            if item_dict["page_minor"] != '0' and item_dict["page_major"] != '0':
+                items_list_dict.append(item_dict)
+
+    return json.dumps(items_list_dict)
 
 
 @jekyll.route("/system_info")
