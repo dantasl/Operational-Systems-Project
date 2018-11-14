@@ -111,7 +111,19 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id="page_faults_div"></div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Process ID</th>
+                                            <th>Page Faults - Minor</th>
+                                            <th>Page Faults - Major</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="page_faults_table"></tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -192,10 +204,10 @@
                 $.ajax({
                     url: "/pgfaults",
                     success: function(data){
-                        $( "#page_faults_div" ).empty();
+                        $( "#page_faults_table" ).empty();
                         var response = JSON.parse(data);
                         for (var i in response) {
-                            var txt1 = "<p>Text.</p>";
+                            $('#page_faults_table').append('<tr><td>' + response[i]["pid"] + '</td><td>' + response[i]["page_minor"] + '</td><td>'+ response[i]["page_major"] + '</td></tr>');
                         }
                     }
                 });
