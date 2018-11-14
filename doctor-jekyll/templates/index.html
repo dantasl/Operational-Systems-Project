@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Doctor Jekyll</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="../static/vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">Doctor Jekyll - System Monitoring</a>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Doctor Jekyll - System Monitoring</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            What is this?
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <p>This is a simple application to monitore how much of principal memory, swapping and cache is being used every 5 seconds. It also monitores the PID's whose number of page faults is bigger than 0, every 8 seconds.</p>
+                            <a target="_blank" class="btn btn-default btn-lg btn-block" href="https://github.com/vertumno/Operational-Systems-Project/tree/master/doctor-jekyll">View This Project On GitHub</a>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Memory and Cache (in MB)
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="morris-donut-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Swap (in MB)
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="morris-donut-chart-swap"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Page Faults
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Process ID</th>
+                                            <th>Page Faults - Minor</th>
+                                            <th>Page Faults - Major</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="page_faults_table"></tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../static/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../static/vendor/raphael/raphael.min.js"></script>
+    <script src="../static/vendor/morrisjs/morris.min.js"></script>
+
+    <!-- Custom Theme JavaScript
+    <script src="../static/dist/js/sb-admin-2.js"></script>-->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            sendRequest();
+            getPageFaults();
+            function sendRequest(){
+                $.ajax({
+                    url: "{{ url_for('system_info') }}",
+                    success: function(data){
+                        $( "#morris-donut-chart" ).empty();
+                        var response = JSON.parse(data);
+                        Morris.Donut({
+                            element: 'morris-donut-chart',
+                            data: [{
+                                label: "Used (MB)",
+                                value: response["used"]
+                            }, {
+                                label: "Free (MB)",
+                                value: response["free"]
+                            }, {
+                                label: "Shared (MB)",
+                                value: response["shared"]
+                            }, {
+                                label: "Buff/Cache (MB)",
+                                value: response["buff_cache"]
+                            }, {
+                                label: "Available (MB)",
+                                value: response["available"]
+                            }],
+                            colors: ["#FF5733", "#6BCF2F", "#1978D8", "#EEE410", "#D010EE"],
+                            resize: true
+                        });
+                        $( "#morris-donut-chart-swap" ).empty();
+                        Morris.Donut({
+                            element: 'morris-donut-chart-swap',
+                            data: [{
+                                label: "Used (MB)",
+                                value: response["used_swap"]
+                            }, {
+                                label: "Free (MB)",
+                                value: response["free_swap"]
+                            }],
+                            colors: ["#FF5733", "#6BCF2F"],
+                            resize: true
+                        });
+                    }
+                });
+                setTimeout(sendRequest, 5000);
+            }
+            function getPageFaults(){
+                $.ajax({
+                    url: "/pgfaults",
+                    success: function(data){
+                        $( "#page_faults_table" ).empty();
+                        var response = JSON.parse(data);
+                        for (var i in response) {
+                            $('#page_faults_table').append('<tr><td>' + response[i]["pid"] + '</td><td>' + response[i]["page_minor"] + '</td><td>'+ response[i]["page_major"] + '</td></tr>');
+                        }
+                    }
+                });
+                setTimeout(getPageFaults, 8000);
+            }
+        });
+    </script>
+</body>
+
+</html>
