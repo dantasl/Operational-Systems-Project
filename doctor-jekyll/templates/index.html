@@ -76,10 +76,10 @@
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-6 -->
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Memory
+                            Memory (in MB)
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -93,20 +93,18 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Swap
+                            Swap (in MB)
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-pie-chart"></div>
-                            </div>
+                            <div id="morris-donut-chart-swap"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-6 -->
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             Cache
@@ -184,14 +182,37 @@
                     url: "{{ url_for('system_info') }}",
                     success: function(data){
                         $( "#morris-donut-chart" ).empty();
+                        var response = JSON.parse(data);
                         Morris.Donut({
                             element: 'morris-donut-chart',
                             data: [{
-                                label: "Used",
-                                value: 12
+                                label: "Used (MB)",
+                                value: response["used"]
                             }, {
-                                label: "Free",
-                                value: 30
+                                label: "Free (MB)",
+                                value: response["free"]
+                            }, {
+                                label: "Shared (MB)",
+                                value: response["shared"]
+                            }, {
+                                label: "Buff/Cache (MB)",
+                                value: response["buff_cache"]
+                            }, {
+                                label: "Available (MB)",
+                                value: response["available"]
+                            }],
+                            colors: ["#FF5733", "#6BCF2F", "#1978D8", "#EEE410", "#D010EE"],
+                            resize: true
+                        });
+                        $( "#morris-donut-chart-swap" ).empty();
+                        Morris.Donut({
+                            element: 'morris-donut-chart-swap',
+                            data: [{
+                                label: "Used (MB)",
+                                value: response["used_swap"]
+                            }, {
+                                label: "Free (MB)",
+                                value: response["free_swap"]
                             }],
                             colors: ["#FF5733", "#6BCF2F"],
                             resize: true
