@@ -1,3 +1,8 @@
 # Doctor Jekyll - System Monitoring
 
-Now the ToDo is the description. Oh gee.
+## Running
+
+* <code>pip install -r requirements.txt</code>
+* <code>python jekyll.py</code>
+
+Then simply access your localhost at the showed port.
