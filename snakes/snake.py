@@ -41,26 +41,15 @@ class Snake:
         elif a[1] > b[1]:
             tail[1]+=1
 
-        tail = self._check_limit(tail)
         self.coords.insert(0, tail)
 
     def is_alive(self):
         head = self.coords[-1]
         snake_body = self.coords[:-1]
-        return head not in snake_body
+        return (head not in snake_body) and (self._is_in_bounds(head))
 
-    def _check_limit(self, point):
-        # Check field limit
-        if point[0] > self.field.size-1:
-            point[0] = 0
-        elif point[0] < 0:
-            point[0] = self.field.size-1
-        elif point[1] < 0:
-            point[1] = self.field.size-1
-        elif point[1] > self.field.size-1:
-            point[1] = 0
-
-        return point
+    def _is_in_bounds(self, point):
+        return (point[0] < self.field.size) and (point[0] > -1) and (point[1] > -1) and (point[1] < self.field.size)
 
     def move(self):
         # Determine head coords
@@ -75,9 +64,6 @@ class Snake:
             head[1]+=1
         elif self.direction == curses.KEY_LEFT:
             head[1]-=1
-
-        # Check field limit
-        head = self._check_limit(head)
 
         del(self.coords[0])
         self.coords.append(head)
