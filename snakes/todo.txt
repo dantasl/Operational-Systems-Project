@@ -1,10 +1,10 @@
 Regras do jogo:
-1. As cobras só possuem 4 opções de movimento possíveis: cima, baixo, esquerda, direita. Uma cobra não
+[OK] 1. As cobras só possuem 4 opções de movimento possíveis: cima, baixo, esquerda, direita. Uma cobra não
 executa um movimento que é diretamente contrário ao seu movimento corrente.
 2. Uma cobra é destruída se:
-2.1 Sua “cabeça” colidir com as paredes do tabuleiro.
+[OK] 2.1 Sua “cabeça” colidir com as paredes do tabuleiro.
 2.2 Sua “cabeça” com uma parte de uma cobra (inclusive com ela mesma).
-3. Uma vez destruída, a cobra deve ser removida do tabuleiro.
+[OK] 3. Uma vez destruída, a cobra deve ser removida do tabuleiro.
 
 Requisitos:
 1. O jogo deve executar no modo Cliente Servidor.
