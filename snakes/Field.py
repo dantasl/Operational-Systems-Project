@@ -43,10 +43,11 @@ class Field:
         self.players.append(snake)
 
     def add_fruit(self):        
-        while(True):
+        while True:
             x = randint(0, self.size-1)
             y = randint(0, self.size-1)
             fruit = [x, y]
+            print("{} {}".format(x, y))
             
             for snake in self.players:
                 if fruit in snake.coords:
@@ -78,7 +79,7 @@ class Field:
         self.field = [[0 for j in range(self.size)] for i in range(self.size)]
 
     def _clear_field(self):        
-        self.field = [[j if j== -2 else 0 for j in i] for i in self.field]
+        self.field = [[j if j == -2 else 0 for j in i] for i in self.field]
 
     def render(self, screen):
         size = self.size
@@ -107,7 +108,6 @@ class Field:
             for j in range(size):
                 row += icons[self.field[i][j]]
 
-            screen.refresh()
             screen.addstr(i, 0, row)
 
         if (self.players):

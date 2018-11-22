@@ -23,6 +23,8 @@ def main(screen):
         if ch == ord('q'):
             clientSocket.shutdown(socket.SHUT_RDWR)
             break
+        elif ch == ord('r'):
+            clientSocket.sendall(playerBytes)
         elif ch != -1:
             clientSocket.sendall(pickle.dumps(ch))
 

@@ -19,6 +19,7 @@ snakesByAddress = {}
 
 def main(screen):
     screen.timeout(0)
+    field.add_fruit()
 
     while True:
         ch = screen.getch()
