@@ -24,11 +24,21 @@ class Field:
     def __init__(self, size):
         self.size = size
         self.players = []
+        self.dead_players = []
+        self.field = []
         self._generate_field()
         self._clear_field()
 
     def add_player(self, snake):
-        snake.set_coords([[3,3],[3,4],[3,5],[3,6]])
+        direction = directions[randint(0, 3)]
+        snake.set_direction(direction)
+
+        while True:
+            coords = self._generate_random_coords(direction)
+            if (self._points_are_available(coords)):
+                snake.set_coords(coords)
+                break
+
         snake.set_number(len(self.players)+1)
         self.players.append(snake)
 
@@ -45,6 +55,25 @@ class Field:
             self.field[x][y] = -2
             break
 
+    def _generate_random_coords(self, direction):
+        x = randint(5, self.size-5)
+        y = randint(5, self.size-5)
+
+        if direction == curses.KEY_LEFT:
+            return [[x-i,y] for i in range(4)]
+        elif direction == curses.KEY_RIGHT:
+            return [[x+i,y] for i in range(4)]
+        elif direction == curses.KEY_UP:
+            return [[x,y-i] for i in range(4)]
+        elif direction == curses.KEY_DOWN:
+            return [[x,y+i] for i in range(4)]
+
+    def _points_are_available(self, collection):
+        for x, y in collection:
+            if self.field[x][y] != 0:
+                return False
+        return True
+
     def _generate_field(self):
         self.field = [[0 for j in range(self.size)] for i in range(self.size)]
 
@@ -55,11 +84,10 @@ class Field:
         size = self.size
         self._clear_field()
 
-        # Render snake body on the field
+        # Render snakes on the field
         for snake in self.players:
             snake.move()
             if self.is_snake_alive(snake):
-                # check if snake eat an entity
                 if self.is_snake_eat_fruit(snake):
                     curses.beep()
                     snake.level_up()
@@ -69,6 +97,9 @@ class Field:
                     self.field[i][j] = -1
                 head = snake.get_head()
                 self.field[head[0]][head[1]] = snake.number
+            else:
+                self.players.remove(snake)
+                self.dead_players.append(snake)
 
         # Draw the field
         for i in range(size):
@@ -76,12 +107,13 @@ class Field:
             for j in range(size):
                 row += icons[self.field[i][j]]
 
+            screen.refresh()
             screen.addstr(i, 0, row)
 
         if (self.players):
-            screen.addstr(size, 0, "{} are playing".format(', '.join(str(p) for p in self.players)), curses.A_STANDOUT)
-        else:
-            screen.addstr(size, 0, "nobody is playing :(", curses.A_STANDOUT)
+            screen.clrtoeol()
+            screen.refresh()
+            screen.addstr(size, 0, "playing: {}".format(', '.join(str(p) for p in self.players)), curses.A_STANDOUT)
 
     def get_fruit_position(self):
         for i in range(self.size):

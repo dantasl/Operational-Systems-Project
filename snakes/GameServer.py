@@ -8,36 +8,50 @@ from random import randint
 from Snake import Snake
 from Field import Field
 
-boardSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddress = (socket.gethostname(), 50100)
-boardSocket.bind(serverAddress)
+serverAddress = (socket.gethostname(), 5010)
+boardSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 bufferSize = 4096
 
 size = 25
 field = Field(size)
 
+snakesByAddress = {}
+
 def main(screen):
     screen.timeout(0)
 
     while True:
+        ch = screen.getch()
+        if ch == ord('q'):
+            break
+
         field.render(screen)
-        screen.refresh()
         time.sleep(.4)
 
 def socketThread():
-    snakesByAdress = {}
+    boardSocket.bind(serverAddress)
+    boardSocket.listen(5)
+
+    conn, addr = boardSocket.accept()
+
+    processThread = threading.Thread(target=newPlayerThread, args=(conn, addr));
+    processThread.start()
+
+def newPlayerThread(conn, addr):
     while True:
-        dataBytes, addr = boardSocket.recvfrom(bufferSize)
-        if (dataBytes):
+        dataBytes = conn.recv(bufferSize)
+        if dataBytes:
             data = pickle.loads(dataBytes)
             try:
                 ch = int(data)
-                snake = snakesByAdress[addr]
-                snake.change_direction(ch)
+                snake = snakesByAddress[addr]
+                if (snake):
+                    snake.change_direction(ch)
             except:
                 new_player = data
-                snakesByAdress[addr] = new_player
+                snakesByAddress[addr] = new_player
                 field.add_player(new_player)
+            
 
 def gameThread():
     curses.wrapper(main)

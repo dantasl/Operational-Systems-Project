@@ -8,24 +8,29 @@ from random import randint
 from Snake import Snake
 from Field import Field
 
-clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddress = (socket.gethostname(), 50100)
+serverAddress = (socket.gethostname(), 5010)
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 bufferSize = 4096
 
 def main(screen):
-    player = Snake("Lucas")
+    player = Snake(sys.argv[1])
     playerBytes = pickle.dumps(player)
-    clientSocket.sendto(playerBytes, serverAddress)
+    clientSocket.connect(serverAddress)
+    clientSocket.sendall(playerBytes)
 
     while True:
         ch = screen.getch()
         if ch == ord('q'):
+            clientSocket.shutdown(socket.SHUT_RDWR)
             break
         elif ch != -1:
-            clientSocket.sendto(pickle.dumps(ch), serverAddress)
+            clientSocket.sendall(pickle.dumps(ch))
 
 def gameThread():
-    curses.wrapper(main)
+    if (len(sys.argv) != 2):
+        print("Usage: python {} [player name]".format(sys.argv[0]))
+    else:
+        curses.wrapper(main)
 
 if __name__=='__main__':
     gt = threading.Thread(target=gameThread)
