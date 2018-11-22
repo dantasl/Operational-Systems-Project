@@ -1,22 +1,8 @@
-Regras do jogo:
-[OK] 1. As cobras só possuem 4 opções de movimento possíveis: cima, baixo, esquerda, direita. Uma cobra não
-executa um movimento que é diretamente contrário ao seu movimento corrente.
-2. Uma cobra é destruída se:
-[OK] 2.1 Sua “cabeça” colidir com as paredes do tabuleiro.
-2.2 Sua “cabeça” com uma parte de uma cobra (inclusive com ela mesma).
-[OK] 3. Uma vez destruída, a cobra deve ser removida do tabuleiro.
+Requisitos pendentes:
 
-Requisitos:
-1. O jogo deve executar no modo Cliente Servidor.
-1.1 O servidor deve, obrigatoriamente, exibir o tabuleiro do jogo mostrando todos os clientes conectados.
-1.2 O servidor deve ser capaz de destruir qualquer cobra, mediante comandos na interface do servidor.
-1.3 Quando um cliente é destruído pela interface do servidor ele é, obrigatoriamente, desconectado.
-1.4 Quando um cliente novo conecta ao servidor, uma nova cobra é criada em uma posição aleatória.
-1.5 Quando a cobra que o cliente controla é destruída, o mesmo tem a opção de escolher entrar novamente no jogo, escolhendo um dos modos de controle novamente.
-1.6 O cliente deve ser capaz de controlar uma cobra no tabuleiro, usando um dos dois modos:
-1.6.1 Aleatório: a cobra desse cliente se move aleatoriamente.
-1.6.2 Jogador: a cobra desse cliente se move através de comandos do usuário.
-2. Quando um cliente conecta, a aplicação cliente exibe um tabuleiro de jogo, da mesma forma que no servidor.
-3. O servidor deve suportar múltiplas cobras ao mesmo tempo.
-4. O servidor deve garantir que o jogo continue executando enquanto espera por novos clientes conectarem.
-5. O servidor deve implementar as regras do jogo.
+1. Cliente: exibir o mesmo campo do servidor.
+2. Servidor: Teste de colisão entre cobras diferentes.
+3. Cliente: ser desconectado ao ser destruído no servidor.
+4. Cliente: opção de reconectar ao jogo.
+5. Servidor: destruir qualquer cobra, mediante comandos na interface.
+6. Cliente: modo de controle da cobra aleatório.
