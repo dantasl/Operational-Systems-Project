@@ -34,9 +34,16 @@ def main(screen):
 
         dataBytes = clientSocket.recv(bufferSize)
         if dataBytes:
-            field = pickle.loads(dataBytes)
+            data = pickle.loads(dataBytes)
+            if data == 'CLOSE':
+                screen.refresh()
+                screen.addstr(field.size, 0, "disconnected by server", curses.A_BOLD)
+                field = None
+            else:
+                field = data
 
         if field:
+            screen.refresh()
             field.render(screen)
             time.sleep(.4)
 

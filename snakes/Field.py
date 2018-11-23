@@ -110,9 +110,8 @@ class Field:
             screen.addstr(i, 0, row)
 
         if (self.players):
-            screen.clrtoeol()
             screen.refresh()
-            screen.addstr(size, 0, "playing: {}".format(', '.join(str(p) for p in self.players)), curses.A_STANDOUT)
+            screen.addstr(size, 0, "playing: {}".format(', '.join(str(p) for p in self.players)), curses.A_BOLD)
 
     def get_fruit_position(self):
         for i in range(self.size):

@@ -4,5 +4,5 @@ Requisitos pendentes:
 2. Servidor: Teste de colisão entre cobras diferentes.
 3. Cliente: ser desconectado ao ser destruído no servidor.
 4. Cliente: opção de reconectar ao jogo.
-5. Servidor: destruir qualquer cobra, mediante comandos na interface.
+[OK] 5. Servidor: destruir qualquer cobra, mediante comandos na interface.
 6. Cliente: modo de controle da cobra aleatório.
