@@ -8,25 +8,38 @@ from random import randint
 from Snake import Snake
 from Field import Field
 
-serverAddress = (socket.gethostname(), 5010)
+serverAddress = (socket.gethostname(), 50100)
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-bufferSize = 4096
+bufferSize = 8192
+field = None
 
 def main(screen):
-    player = Snake(sys.argv[1])
+    screen.timeout(0)
+
+    player_name = sys.argv[1]
+    player = Snake(player_name)
     playerBytes = pickle.dumps(player)
+
+    #send new player to the game
     clientSocket.connect(serverAddress)
     clientSocket.sendall(playerBytes)
 
+    #handle the player moves
     while True:
         ch = screen.getch()
         if ch == ord('q'):
             clientSocket.shutdown(socket.SHUT_RDWR)
             break
-        elif ch == ord('r'):
-            clientSocket.sendall(playerBytes)
         elif ch != -1:
             clientSocket.sendall(pickle.dumps(ch))
+
+        dataBytes = clientSocket.recv(bufferSize)
+        if dataBytes:
+            field = pickle.loads(dataBytes)
+
+        if field:
+            field.render(screen)
+            time.sleep(.4)
 
 def gameThread():
     if (len(sys.argv) != 2):

@@ -47,7 +47,6 @@ class Field:
             x = randint(0, self.size-1)
             y = randint(0, self.size-1)
             fruit = [x, y]
-            print("{} {}".format(x, y))
             
             for snake in self.players:
                 if fruit in snake.coords:
