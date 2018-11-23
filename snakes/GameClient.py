@@ -8,7 +8,7 @@ from random import randint
 from Snake import Snake
 from Field import Field
 
-serverAddress = (socket.gethostname(), 50100)
+serverAddress = (socket.gethostname(), 5010)
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 bufferSize = 8192
 field = None
@@ -28,7 +28,6 @@ def main(screen):
     while True:
         ch = screen.getch()
         if ch == ord('q'):
-            clientSocket.shutdown(socket.SHUT_RDWR)
             break
         elif ch != -1:
             clientSocket.sendall(pickle.dumps(ch))
@@ -40,6 +39,9 @@ def main(screen):
         if field:
             field.render(screen)
             time.sleep(.4)
+
+    clientSocket.shutdown(2)
+    clientSocket.close()
 
 def gameThread():
     if (len(sys.argv) != 2):

@@ -1,6 +1,6 @@
 Requisitos pendentes:
 
-1. Cliente: exibir o mesmo campo do servidor.
+[OK] 1. Cliente: exibir o mesmo campo do servidor.
 2. Servidor: Teste de colisão entre cobras diferentes.
 3. Cliente: ser desconectado ao ser destruído no servidor.
 4. Cliente: opção de reconectar ao jogo.

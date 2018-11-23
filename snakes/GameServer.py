@@ -8,7 +8,7 @@ from random import randint
 from Snake import Snake
 from Field import Field
 
-serverAddress = (socket.gethostname(), 50100)
+serverAddress = (socket.gethostname(), 5010)
 boardSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 bufferSize = 8192
 
@@ -29,17 +29,24 @@ def main(screen):
         field.render(screen)
         time.sleep(.4)
 
+    boardSocket.shutdown(2)
+    boardSocket.close()
+
 def socketThread():
     boardSocket.bind(serverAddress)
     boardSocket.listen(5)
 
-    conn, addr = boardSocket.accept()
+    while len(snakesByAddress) < 5:
+        try:
+            conn, addr = boardSocket.accept()
 
-    thread1 = threading.Thread(target=newPlayerThread, args=(conn, addr));
-    thread1.start()
+            thread1 = threading.Thread(target=newPlayerThread, args=(conn, addr));
+            thread1.start()
 
-    thread2 = threading.Thread(target=shareBoardThread, args=(conn, addr));
-    thread2.start()
+            thread2 = threading.Thread(target=shareBoardThread, args=(conn, addr));
+            thread2.start()
+        except:
+            pass
 
 def newPlayerThread(conn, addr):
     while True:
@@ -55,13 +62,17 @@ def newPlayerThread(conn, addr):
                 new_player = data
                 snakesByAddress[addr] = new_player
                 field.add_player(new_player)
+    conn.shutdown(2)
+    conn.close()
 
 def shareBoardThread(conn, addr):
     while True:
         fieldBytes = pickle.dumps(field)
-        conn.send(fieldBytes)
+        try:
+            conn.send(fieldBytes)
+        except:
+            pass
         time.sleep(.4)
-            
 
 def gameThread():
     curses.wrapper(main)
